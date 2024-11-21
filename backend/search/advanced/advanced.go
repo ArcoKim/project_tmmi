@@ -137,7 +137,7 @@ func advancedSearch(prompt string) (*[]Song, error) {
 		return nil, err
 	}
 
-	sdkConfig, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("us-east-1"))
+	sdkConfig, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("ap-northeast-2"))
 	if err != nil {
 		return nil, err
 	}

@@ -15,14 +15,9 @@ provider "aws" {
   region = "ap-northeast-2"
 }
 
-provider "aws" {
-  alias  = "us"
-  region = "us-east-1"
-}
-
 provider "opensearch" {
   url         = aws_opensearchserverless_collection.kb.collection_endpoint
-  aws_region  = "us-east-1"
+  aws_region  = "ap-northeast-2"
   healthcheck = false
 }
 

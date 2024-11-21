@@ -42,7 +42,7 @@ func HandleLambdaEvent(request events.APIGatewayProxyRequest) (events.APIGateway
 }
 
 func lyricsSearch(body Body) (*string, error) {
-	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("us-east-1"))
+	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("ap-northeast-2"))
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +54,7 @@ func lyricsSearch(body Body) (*string, error) {
 			Type: types.RetrieveAndGenerateType("KNOWLEDGE_BASE"),
 			KnowledgeBaseConfiguration: &types.KnowledgeBaseRetrieveAndGenerateConfiguration{
 				KnowledgeBaseId: aws.String(os.Getenv("kb_id")),
-				ModelArn:        aws.String("arn:aws:bedrock:us-east-1::foundation-model/anthropic.claude-3-sonnet-20240229-v1:0"),
+				ModelArn:        aws.String("arn:aws:bedrock:ap-northeast-2::foundation-model/anthropic.claude-3-sonnet-20240229-v1:0"),
 			},
 		},
 	})

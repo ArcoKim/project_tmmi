@@ -1,15 +1,12 @@
 data "aws_bedrock_foundation_model" "claude" {
-  provider = aws.us
   model_id = "anthropic.claude-3-sonnet-20240229-v1:0"
 }
 
 data "aws_bedrock_foundation_model" "titan" {
-  provider = aws.us
   model_id = "amazon.titan-embed-text-v2:0"
 }
 
 resource "aws_bedrockagent_knowledge_base" "kb" {
-  provider = aws.us
   name     = "tmmi-kb"
   role_arn = aws_iam_role.bedrock_kb.arn
   knowledge_base_configuration {
@@ -36,13 +33,12 @@ resource "aws_bedrockagent_knowledge_base" "kb" {
 }
 
 resource "aws_bedrockagent_data_source" "kb" {
-  provider          = aws.us
   knowledge_base_id = aws_bedrockagent_knowledge_base.kb.id
   name              = "tmmi-songs"
   data_source_configuration {
     type = "S3"
     s3_configuration {
-      bucket_arn = aws_s3_bucket.destination.arn
+      bucket_arn = aws_s3_bucket.kb.arn
     }
   }
 }
@@ -63,7 +59,7 @@ resource "aws_iam_role" "bedrock_kb" {
             "aws:SourceAccount" = local.account_id
           }
           ArnLike = {
-            "aws:SourceArn" = "arn:${local.partition}:bedrock:us-east-1:${local.account_id}:knowledge-base/*"
+            "aws:SourceArn" = "arn:${local.partition}:bedrock:ap-northeast-2:${local.account_id}:knowledge-base/*"
           }
         }
       }
@@ -116,7 +112,7 @@ resource "aws_iam_role_policy" "kb_s3" {
         Sid      = "S3ListBucketStatement"
         Action   = "s3:ListBucket"
         Effect   = "Allow"
-        Resource = aws_s3_bucket.destination.arn
+        Resource = aws_s3_bucket.kb.arn
         Condition = {
           StringEquals = {
             "aws:PrincipalAccount" = local.account_id
@@ -126,7 +122,7 @@ resource "aws_iam_role_policy" "kb_s3" {
         Sid      = "S3GetObjectStatement"
         Action   = "s3:GetObject"
         Effect   = "Allow"
-        Resource = "${aws_s3_bucket.destination.arn}/*"
+        Resource = "${aws_s3_bucket.kb.arn}/*"
         Condition = {
           StringEquals = {
             "aws:PrincipalAccount" = local.account_id
@@ -138,7 +134,6 @@ resource "aws_iam_role_policy" "kb_s3" {
 }
 
 resource "aws_opensearchserverless_collection" "kb" {
-  provider = aws.us
   name     = "bedrock-knowledge-base-tmmi"
   type     = "VECTORSEARCH"
   depends_on = [
@@ -186,7 +181,6 @@ resource "opensearch_index" "kb" {
 }
 
 resource "aws_opensearchserverless_access_policy" "kb" {
-  provider = aws.us
   name     = "bedrock-knowledge-base-tmmi"
   type     = "data"
   policy = jsonencode([
@@ -226,7 +220,6 @@ resource "aws_opensearchserverless_access_policy" "kb" {
 }
 
 resource "aws_opensearchserverless_security_policy" "kb_encryption" {
-  provider = aws.us
   name     = "bedrock-knowledge-base-tmmi"
   type     = "encryption"
   policy = jsonencode({
@@ -243,7 +236,6 @@ resource "aws_opensearchserverless_security_policy" "kb_encryption" {
 }
 
 resource "aws_opensearchserverless_security_policy" "kb_network" {
-  provider = aws.us
   name     = "bedrock-knowledge-base-tmmi"
   type     = "network"
   policy = jsonencode([

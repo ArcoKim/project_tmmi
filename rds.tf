@@ -61,7 +61,7 @@ data "aws_iam_policy_document" "export" {
       "s3:AbortMultipartUpload"
     ]
 
-    resources = ["${aws_s3_bucket.source.arn}/*"]
+    resources = ["${aws_s3_bucket.kb.arn}/*"]
   }
 }
 
